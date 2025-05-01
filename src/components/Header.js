@@ -1,5 +1,6 @@
 import React from "react";
-import garfieldImage from "../assets/garfield.jpeg";
+import garfieldImage from "../assets/garfield.png";
+import imgbackground from "../assets/bg.png";
 
 
 
@@ -7,7 +8,12 @@ const Header = () => {
 
 
   return (
-    <header className="w-full h-auto bg-zinc-900 bg-center pb-4 mb-3">
+    <header className="w-full h-auto bg-zinc-900 bg-center pb-4 mb-3"
+      style={{
+        backgroundImage: `url(${imgbackground})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}>
       <div className="w-full h-auto flex flex-col justify-center items-center">
         <img
           src={ garfieldImage}
