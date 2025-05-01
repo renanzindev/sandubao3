@@ -11,12 +11,16 @@ import products from "./data/products";
 
 
 
+
+
 const App = () => {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [address, setAddress] = useState("");
   const [addressWarn, setAddressWarn] = useState(false);
-
+  const [toastMessage, setToastMessage] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  
   const addToCart = (name, price) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.name === name);
@@ -30,7 +34,12 @@ const App = () => {
         return [...prevCart, { name, price, quantity: 1 }];
       }
     });
-  };
+  
+  setToastMessage(`${name} adicionado ao carrinho!`);
+  setTimeout(() => setToastMessage(""), 2000);
+  
+};
+
 
   const removeFromCart = (name) => {
     setCart((prevCart) =>
@@ -45,30 +54,76 @@ const App = () => {
       )
     );
   };
+
+
+  const incrementItem = (name) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.name === name
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      )
+    );
+  };
+
+
+  const decrementItem = (name) => {
+    setCart((prevCart) =>
+      prevCart
+        .map((item) =>
+          item.name === name
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
+
   const calculateTotal = () =>
     cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const checkout = () => {
-    if (cart.length === 0 || address.trim() === "") {
+    if (
+      cart.length === 0 ||
+      address.trim() === "" ||
+      customerName.trim() === ""
+    ) {
       setAddressWarn(true);
       return;
-      }
-
+    }
+  
     const cartItems = cart
       .map(
         (item) =>
-          `${item.name} Quantidade: (${item.quantity}) Preço: R$${item.price.toFixed(
-            2
-          )}`
+          `🍔 *${item.name}*\nQuantidade: ${item.quantity}\nPreço: R$ ${item.price.toFixed(2)}\n`
       )
       .join("\n");
 
-    const message = encodeURIComponent(`${cartItems}\nEndereço: ${address}`);
-    const phone = "31971659344";
-    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+      const total = calculateTotal(); // 👈 calcula o valor total
 
-    setCart([]);
-    setIsCartOpen(false);
+      const message = encodeURIComponent(
+        `📦 *Novo Pedido - ${customerName}*\n\n${cartItems}` +
+        `📍 *Endereço:* ${address}\n\n` +
+        `💰 *Total:* R$ ${total.toFixed(2)}`
+      );
+    
+      const phone = "31971539755";
+      window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+
+      const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+      const newOrder = {
+        address,
+        items: cart,
+        customerName,
+        date: new Date().toLocaleString(),
+      };
+      localStorage.setItem("orders", JSON.stringify([...savedOrders, newOrder]));
+
+
+      setCart([]);
+      setIsCartOpen(false);
+      setCustomerName("");
   };
 
   return (
@@ -93,11 +148,23 @@ const App = () => {
         checkout={checkout}
         address={address}
         setAddress={setAddress}
+        incrementItem={incrementItem}  
+        decrementItem={decrementItem}  
         addressWarn={addressWarn}
+        customerName={customerName}
+        setCustomerName={setCustomerName}
       />
     )}
-    <Footer cartCount={cart.length} openCart={() => setIsCartOpen(true)} />
+    {!isCartOpen && (
+      <Footer cartCount={cart.length} openCart={() => setIsCartOpen(true)} />
+    )}
       <BottomNav />
+
+      {toastMessage && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow-md z-50">
+          {toastMessage}
+          </div>
+          )}
   </Router>
   );
 };

@@ -5,7 +5,7 @@ import { faHome, faUtensils, faWineGlass } from "@fortawesome/free-solid-svg-ico
 
 const BottomNav = () => {
   return (
-    <nav className="fixed bottom-0 w-full bg-gray-900 text-white flex justify-around items-center py-3 z-50 shadow-md">
+    <nav className="fixed pt-4 bottom-0 w-full bg-gray-900 text-white flex justify-around items-center py-3 z-50 shadow-md">
       {/* Home */}
       <Link to="/" className="flex flex-col items-center text-gray-300 hover:text-white">
         <FontAwesomeIcon icon={faHome} className="text-xl" />

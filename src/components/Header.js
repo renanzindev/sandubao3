@@ -1,10 +1,11 @@
 import React from "react";
 import garfieldImage from "../assets/garfield.jpeg";
-import { Link } from "react-router-dom"; // Para navegação
 
 
 
 const Header = () => {
+
+
   return (
     <header className="w-full h-auto bg-zinc-900 bg-center pb-4 mb-3">
       <div className="w-full h-auto flex flex-col justify-center items-center">
