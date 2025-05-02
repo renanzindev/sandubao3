@@ -17,7 +17,7 @@ const ProductList = ({ products, addToCart }) => {
               <p className="font-bold text-lg">R$ {product.price.toFixed(2)}</p>
               <button
                 className="bg-gray-900 px-5 rounded"
-                onClick={() => addToCart(product.name, product.price)}
+                onClick={() => addToCart(product.name, product.price, product.image)}
               >
                 <i className="fa fa-cart-plus text-lg text-white"></i>
               </button>

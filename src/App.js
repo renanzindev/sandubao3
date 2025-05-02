@@ -9,10 +9,6 @@ import Combos from "./pages/Combos";
 import BottomNav from "./components/BottomNav";
 import products from "./data/products";
 
-
-
-
-
 const App = () => {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -21,7 +17,7 @@ const App = () => {
   const [toastMessage, setToastMessage] = useState("");
   const [customerName, setCustomerName] = useState("");
   
-  const addToCart = (name, price) => {
+  const addToCart = (name, price, image) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.name === name);
       if (existingItem) {
@@ -31,7 +27,7 @@ const App = () => {
             : item
         );
       } else {
-        return [...prevCart, { name, price, quantity: 1 }];
+        return [...prevCart, { name, price, image, quantity: 1 }];
       }
     });
   
