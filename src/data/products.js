@@ -10,32 +10,32 @@ import hamb8 from "../assets/hamb-8.png";
 const products = [
     {
       name: "X Bacon",
-      description: "Pão com gergelim, hambúrguer, presunto, muçarela, bacon...",
-      price: 10.0,
+      description: "Pão com gergelim, bife de hambúrguer, presunto, mussarela, bacon, molho Sandubão, batata palha, alface americana e tomate.",
+      price: 9.99,
       image: hamb1,
     },
     {
       name: "X Egg Bacon",
-      description: "Pão com gergelim, hambúrguer, presunto, muçarela, ovo, bacon...",
-      price: 11.99,
+      description: "Pão com gergelim, bife de hambúrguer, presunto, mussarela, ovo, bacon, batata palha, alface americana e tomate.",
+      price: 16.24,
       image: hamb2,
     },
     {
       name: "X Tudo Turbo",
-      description: "Pão com gergelim, hambúrguer 90g, presunto, muçarela, ovo, bacon...",
-      price: 15.0,
+      description: "Pão com gergelim, bife de hambúrguer, presunto, mussarela, ovo, bacon, molho Sandubão, cheddar, batata palha, alface americana e tomate.",
+      price: 24.99,
       image: hamb3,
     },
     {
       name: "Baby Burguer",
-      description: "Pão com gergelim, bife especial 120g, presunto, muçarela, molho Sandubão e alface americana.",
-      price: 18.0,
+      description: "Pão com gergelim, bife especial 120g, presunto, mussarela, molho Sandubão e alface americana e tomate.",
+      price: 25.99,
       image: hamb4,
     },
     {
       name: "Gulosão",
-      description: "Pão com gergelim, 2 bifes de hambúrguer, bacon, calabresa, 2 ovos, presunto, muçarela, abacaxi, batata palha e alface americana.",
-      price: 19.0,
+      description: "Pão com gergelim, 2 bifes de hambúrguer, bacon, calabresa, 2 ovos, presunto, mussarela, batata palha, alface americana e tomate.",
+      price: 22.49,
       image: hamb5,
     },
     {
@@ -70,8 +70,8 @@ const products = [
     },
     {
       name: "X Infarto",
-      description: "Pão com gergelim, 3 bifes de hambúrguer, 3 ovos, 2 presuntos, 2 muçarelas, bacon, calabresa, molho cheddar, batata palha e alface americana.",
-      price: 21.0,
+      description: "Pão com gergelim, 3 bifes de hambúrguer, 3 ovos, 2 presuntos, 2 mussarelas, bacon, calabresa, frango, molho especial sandubão, azeitona, cheddar, milho, batata palha e alface americana.",
+      price: 39.99,
       image: hamb3,
     },
     {

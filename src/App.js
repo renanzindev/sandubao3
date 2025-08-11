@@ -1,168 +1,281 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import ProductList from "./components/ProductList";
 import CartModal from "./components/CartModal";
+import ProductModal from "./components/ProductModal";
 import Footer from "./components/Footer";
 import Bebidas from "./pages/Bebidas";
 import Combos from "./pages/Combos";
 import BottomNav from "./components/BottomNav";
-import products from "./data/products";
+import Toast from "./components/Toast";
+import Loading from "./components/Loading";
+import products from './data/products';
 
-const App = () => {
+function App() {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [address, setAddress] = useState("");
-  const [addressWarn, setAddressWarn] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const [toast, setToast] = useState({ message: "", type: "success" });
   const [customerName, setCustomerName] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [favorites, setFavorites] = useState(new Set());
+
+  // Simula carregamento inicial
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Carrega dados do localStorage
+  useEffect(() => {
+    const savedCart = localStorage.getItem('sandubao_cart');
+    const savedFavorites = localStorage.getItem('sandubao_favorites');
+    const savedCustomerName = localStorage.getItem('sandubao_customer_name');
+    const savedAddress = localStorage.getItem('sandubao_address');
+    
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (error) {
+        console.error('Erro ao carregar carrinho:', error);
+      }
+    }
+    
+    if (savedFavorites) {
+      try {
+        setFavorites(new Set(JSON.parse(savedFavorites)));
+      } catch (error) {
+        console.error('Erro ao carregar favoritos:', error);
+      }
+    }
+    
+    if (savedCustomerName) {
+      setCustomerName(savedCustomerName);
+    }
+    
+    if (savedAddress) {
+      setAddress(savedAddress);
+    }
+  }, []);
+
+  // Salva dados no localStorage
+  useEffect(() => {
+    localStorage.setItem('sandubao_cart', JSON.stringify(cart));
+  }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem('sandubao_favorites', JSON.stringify([...favorites]));
+  }, [favorites]);
+
+  useEffect(() => {
+    if (customerName) {
+      localStorage.setItem('sandubao_customer_name', customerName);
+    }
+  }, [customerName]);
+
+  useEffect(() => {
+    if (address) {
+      localStorage.setItem('sandubao_address', address);
+    }
+  }, [address]);
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+  };
   
   const addToCart = (name, price, image) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.name === name);
-      if (existingItem) {
-        return prevCart.map((item) =>
+    const existingItem = cart.find((item) => item.name === name);
+    if (existingItem) {
+      setCart(
+        cart.map((item) =>
           item.name === name
             ? { ...item, quantity: item.quantity + 1 }
             : item
-        );
-      } else {
-        return [...prevCart, { name, price, image, quantity: 1 }];
-      }
-    });
-  
-  setToastMessage(`${name} adicionado ao carrinho!`);
-  setTimeout(() => setToastMessage(""), 2000);
-  
-};
-
-
-  const removeFromCart = (name) => {
-    setCart((prevCart) =>
-      prevCart.filter((item) =>
-        item.name === name
-          ? item.quantity > 1 // Mantém o item no carrinho se a quantidade for maior que 1
-          : true // Mantém os outros itens
-      ).map((item) =>
-        item.name === name
-          ? { ...item, quantity: item.quantity - 1 } // Decrementa a quantidade do item
-          : item // Retorna os outros itens sem alterações
-      )
-    );
+        )
+      );
+      showToast(`Quantidade de ${name} aumentada!`, "success");
+    } else {
+      setCart([...cart, { name, price, image, quantity: 1 }]);
+      showToast(`${name} adicionado ao carrinho!`, "success");
+    }
   };
 
+  const removeFromCart = (name) => {
+    const item = cart.find((item) => item.name === name);
+    if (item) {
+      setCart(cart.filter((item) => item.name !== name));
+      showToast(`${item.name} removido do carrinho`, "info");
+    }
+  };
 
-  const incrementItem = (name) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
+  const updateCartQuantity = (name, newQuantity) => {
+    if (newQuantity <= 0) {
+      removeFromCart(name);
+      return;
+    }
+    
+    setCart(
+      cart.map((item) =>
         item.name === name
-          ? { ...item, quantity: item.quantity + 1 }
+          ? { ...item, quantity: newQuantity }
           : item
       )
     );
   };
 
+  const clearCart = () => {
+    setCart([]);
+    showToast("Carrinho limpo!", "info");
+  };
 
-  const decrementItem = (name) => {
-    setCart((prevCart) =>
-      prevCart
-        .map((item) =>
-          item.name === name
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        )
-        .filter((item) => item.quantity > 0)
+  const toggleFavorite = (productId) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(productId)) {
+        newFavorites.delete(productId);
+        showToast("Removido dos favoritos", "info");
+      } else {
+        newFavorites.add(productId);
+        showToast("Adicionado aos favoritos!", "success");
+      }
+      return newFavorites;
+    });
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const openProductModal = (product) => {
+    setSelectedProduct(product);
+    setIsProductModalOpen(true);
+  };
+
+  const closeProductModal = () => {
+    setSelectedProduct(null);
+    setIsProductModalOpen(false);
+  };
+
+
+
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <Loading 
+          size="xlarge" 
+          text="Preparando o melhor sabor para você..." 
+          color="yellow" 
+        />
+      </div>
     );
-  };
-
-
-  const calculateTotal = () =>
-    cart.reduce((total, item) => total + item.price * item.quantity, 0);
-
-  const checkout = () => {
-    if (
-      cart.length === 0 ||
-      address.trim() === "" ||
-      customerName.trim() === ""
-    ) {
-      setAddressWarn(true);
-      return;
-    }
-  
-    const cartItems = cart
-      .map(
-        (item) =>
-          `🍔 *${item.name}*\nQuantidade: ${item.quantity}\nPreço: R$ ${item.price.toFixed(2)}\n`
-      )
-      .join("\n");
-
-      const total = calculateTotal(); // 👈 calcula o valor total
-
-      const message = encodeURIComponent(
-        `📦 *Novo Pedido - ${customerName}*\n\n${cartItems}` +
-        `📍 *Endereço:* ${address}\n\n` +
-        `💰 *Total:* R$ ${total.toFixed(2)}`
-      );
-    
-      const phone = "31971539755";
-      window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-
-      const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
-      const newOrder = {
-        address,
-        items: cart,
-        customerName,
-        date: new Date().toLocaleString(),
-      };
-      localStorage.setItem("orders", JSON.stringify([...savedOrders, newOrder]));
-
-
-      setCart([]);
-      setIsCartOpen(false);
-      setCustomerName("");
-  };
+  }
 
   return (
     <Router>
-    <Header />
-    <div className='pb-16'>
-    <Routes>
-      <Route
-        path="/"
-        element={<ProductList products={products} addToCart={addToCart} />}
-      />
-      <Route path="/bebidas" element={<Bebidas />} />
-      <Route path="/combos" element={<Combos />} />
-    </Routes>
-    </div>
-    {isCartOpen && (
-      <CartModal
-        cart={cart}
-        closeModal={() => setIsCartOpen(false)}
-        removeFromCart={removeFromCart}
-        calculateTotal={calculateTotal}
-        checkout={checkout}
-        address={address}
-        setAddress={setAddress}
-        incrementItem={incrementItem}  
-        decrementItem={decrementItem}  
-        addressWarn={addressWarn}
-        customerName={customerName}
-        setCustomerName={setCustomerName}
-      />
-    )}
-    {!isCartOpen && (
-      <Footer cartCount={cart.length} openCart={() => setIsCartOpen(true)} />
-    )}
-      <BottomNav />
+      <div className="min-h-screen bg-gray-100">
+        <Header />
+        
+        <main className="pb-32">
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                <ProductList 
+                  products={products} 
+                  addToCart={addToCart} 
+                  onProductClick={openProductModal}
+                  favorites={favorites}
+                  onToggleFavorite={toggleFavorite}
+                />
+              } 
+            />
+            <Route 
+              path="/bebidas" 
+              element={
+                <Bebidas 
+                  addToCart={addToCart} 
+                  onProductClick={openProductModal}
+                  favorites={favorites}
+                  onToggleFavorite={toggleFavorite}
+                  showToast={showToast}
+                />
+              } 
+            />
+            <Route 
+              path="/combos" 
+              element={
+                <Combos 
+                  addToCart={addToCart} 
+                  onProductClick={openProductModal}
+                  favorites={favorites}
+                  onToggleFavorite={toggleFavorite}
+                  showToast={showToast}
+                />
+              } 
+            />
+          </Routes>
+        </main>
 
-      {toastMessage && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow-md z-50">
-          {toastMessage}
-          </div>
-          )}
-  </Router>
+        <Footer 
+          cart={cart} 
+          onCartClick={() => setIsCartOpen(true)} 
+        />
+        
+        <BottomNav />
+
+        {isCartOpen && (
+          <CartModal
+            cart={cart}
+            closeModal={() => setIsCartOpen(false)}
+            removeFromCart={removeFromCart}
+            calculateTotal={calculateTotal}
+            checkout={() => console.log('Checkout')}
+            address={address}
+            setAddress={setAddress}
+            addressWarn={false}
+            incrementItem={(name) => {
+              const item = cart.find(item => item.name === name);
+              if (item) {
+                updateCartQuantity(name, item.quantity + 1);
+              }
+            }}
+            decrementItem={(name) => {
+              const item = cart.find(item => item.name === name);
+              if (item) {
+                updateCartQuantity(name, item.quantity - 1);
+              }
+            }}
+            customerName={customerName}
+            setCustomerName={setCustomerName}
+          />
+        )}
+
+        {isProductModalOpen && selectedProduct && (
+          <ProductModal
+            product={selectedProduct}
+            onClose={closeProductModal}
+            onAddToCart={addToCart}
+            isFavorite={favorites.has(selectedProduct.id)}
+            onToggleFavorite={() => toggleFavorite(selectedProduct.id)}
+            showToast={showToast}
+          />
+        )}
+
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ message: "", type: "success" })}
+        />
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;
