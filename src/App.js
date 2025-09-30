@@ -7,6 +7,7 @@ import ProductModal from "./components/ProductModal";
 import Footer from "./components/Footer";
 import Bebidas from "./pages/Bebidas";
 import Combos from "./pages/Combos";
+import CustomSandwich from "./pages/CustomSandwich";
 import BottomNav from "./components/BottomNav";
 import Toast from "./components/Toast";
 import Loading from "./components/Loading";
@@ -270,6 +271,15 @@ function App() {
                   onProductClick={openProductModal}
                   favorites={favorites}
                   onToggleFavorite={toggleFavorite}
+                  showToast={showToast}
+                />
+              } 
+            />
+            <Route 
+              path="/custom" 
+              element={
+                <CustomSandwich 
+                  addToCart={addToCart} 
                   showToast={showToast}
                 />
               } 

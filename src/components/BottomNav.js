@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHamburger, faUtensils, faWineGlass } from "@fortawesome/free-solid-svg-icons";
+import { faHamburger, faUtensils, faWineGlass, faCog } from "@fortawesome/free-solid-svg-icons";
 
 const BottomNav = () => {
   const location = useLocation();
@@ -65,11 +65,21 @@ const BottomNav = () => {
           )}
         </div>
         <span className="text-xs mt-1 font-medium">Combos</span>
-        {isActive("/combos") && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
-            !
-          </span>
-        )}
+      </Link>
+
+      {/* Customização */}
+      <Link 
+        to="/custom" 
+        className={getLinkClasses("/custom")}
+        aria-label="Página de Customização"
+      >
+        <div className="relative">
+          <FontAwesomeIcon icon={faCog} className="text-xl" />
+          {isActive("/custom") && (
+            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-yellow-400 rounded-full"></div>
+          )}
+        </div>
+        <span className="text-xs mt-1 font-medium">Custom</span>
       </Link>
     </nav>
   );
