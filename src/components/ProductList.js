@@ -39,7 +39,7 @@ const ProductList = ({ products, addToCart, onProductClick }) => {
   }
 
   return (
-    <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-16">
+    <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-2">
       {products.map((product, index) => (
         <div
           key={index}

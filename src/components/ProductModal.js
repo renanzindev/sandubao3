@@ -18,10 +18,10 @@ const ProductModal = ({ product, isOpen, onClose, addToCart }) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-2 md:p-4"
       onClick={handleOverlayClick}
     >
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto relative animate-fade-in">
+      <div className="bg-white rounded-xl max-w-6xl w-full max-h-[95vh] overflow-y-auto relative animate-fade-in shadow-2xl">
         {/* Botão de fechar */}
         <button
           onClick={onClose}
@@ -31,13 +31,23 @@ const ProductModal = ({ product, isOpen, onClose, addToCart }) => {
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
-          {/* Imagem do produto */}
-          <div className="flex justify-center items-center">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full max-w-md h-auto rounded-lg shadow-lg object-cover"
-            />
+          {/* Imagem do produto - Ampliada e mais próxima */}
+          <div className="flex justify-center items-center bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-4">
+            <div className="relative group">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full max-w-lg h-auto rounded-xl shadow-2xl object-cover transform transition-transform duration-300 group-hover:scale-105"
+                style={{ minHeight: '300px', maxHeight: '500px' }}
+              />
+              {/* Efeito de brilho na imagem */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-xl"></div>
+              
+              {/* Badge de destaque */}
+              <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
+                👁️ Visualização Ampliada
+              </div>
+            </div>
           </div>
 
           {/* Informações do produto */}
@@ -78,6 +88,28 @@ const ProductModal = ({ product, isOpen, onClose, addToCart }) => {
           </div>
         </div>
       </div>
+      
+      {/* Estilos CSS personalizados */}
+      <style>{`
+        .animate-fade-in {
+          animation: fadeInScale 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeInScale {
+          from {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+        
+        .group:hover .group-hover\\:scale-105 {
+          transform: scale(1.05);
+        }
+      `}</style>
     </div>
   );
 };

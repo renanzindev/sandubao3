@@ -11,7 +11,7 @@ const Footer = ({ cart, onCartClick }) => {
     const urls = {
       instagram: 'https://instagram.com/sandubao',
       facebook: 'https://facebook.com/sandubao',
-      whatsapp: 'https://wa.me/5531969405480?text=Olá! Gostaria de saber mais sobre o Sandubão 🍔'
+      whatsapp: 'https://wa.me/5531971659344?text=Olá! Gostaria de saber mais sobre o Sandubão 🍔'
     };
     
     window.open(urls[platform], '_blank');
@@ -20,11 +20,11 @@ const Footer = ({ cart, onCartClick }) => {
   return (
     <>
       {/* Footer Principal */}
-      <footer className="bg-gray-900 text-white mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <footer className="bg-gray-900 text-white ">
+        <div className="container mx-auto px-4 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Informações da Empresa */}
-            <div className="space-y-4">
+            <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <span className="text-2xl">🍔</span>
                 <h3 className="text-xl font-bold text-yellow-400">Sandubão</h3>
@@ -75,7 +75,7 @@ const Footer = ({ cart, onCartClick }) => {
               <div className="space-y-2 text-sm text-gray-300">
                 <p>📍 R. Dorotéia Thompson, 211</p>
                 <p>Chácaras Califórnia</p>
-                <p>📞 (31) 9694-0548</p>
+                <p>📞 (31) 97165-9344</p>
                 <p>🕒 Seg-Dom: 18h às 23h</p>
                 <div className="flex items-center space-x-1 mt-3">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>

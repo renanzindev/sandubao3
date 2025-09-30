@@ -11,13 +11,10 @@ import CocaZero from "../assets/CocaCola2LZero.png"
 
 
 
-const Bebidas = () => {
+const Bebidas = ({ addToCart, onProductClick, showToast }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  // const [cart, setCart] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
-
-  // addToCart function removed - handled by parent component
 
   const openProductModal = (product) => {
     setSelectedProduct(product);
@@ -98,8 +95,11 @@ const Bebidas = () => {
               <div className="flex items-center gap-2 justify-between mt-3">
                 <p className="font-bold text-lg">R$ {bebida.price.toFixed(2)}</p>
                 <button
-                  className="bg-gray-900 px-5 rounded"
-                  onClick={() => console.log('Add to cart:', bebida.name)}
+                  className="bg-gray-900 px-5 rounded hover:bg-gray-800 transition-colors duration-200"
+                  onClick={() => {
+                    addToCart(bebida.name, bebida.price, bebida.image);
+                    showToast && showToast(`${bebida.name} adicionado ao carrinho!`);
+                  }}
                 >
                   <i className="fa fa-cart-plus text-lg text-white"></i>
                 </button>
@@ -119,7 +119,7 @@ const Bebidas = () => {
         product={selectedProduct}
         isOpen={isProductModalOpen}
         onClose={closeProductModal}
-        addToCart={() => console.log('Add to cart from modal')}
+        addToCart={addToCart}
       />
     </div>
   );

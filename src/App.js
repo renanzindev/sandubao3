@@ -152,6 +152,60 @@ function App() {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
+  const handleWhatsAppCheckout = () => {
+    // Validações
+    if (cart.length === 0) {
+      showToast("Seu carrinho está vazio!", "error");
+      return;
+    }
+
+    if (!customerName.trim()) {
+      showToast("Por favor, informe seu nome!", "error");
+      return;
+    }
+
+    if (!address.trim()) {
+      showToast("Por favor, informe seu endereço de entrega!", "error");
+      return;
+    }
+
+    // Formatação da mensagem para WhatsApp
+    let message = `🍔 *NOVO PEDIDO - SANDUBÃO* 🍔\n\n`;
+    message += `👤 *Cliente:* ${customerName}\n`;
+    message += `📍 *Endereço:* ${address}\n\n`;
+    message += `🛒 *ITENS DO PEDIDO:*\n`;
+    message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+
+    cart.forEach((item, index) => {
+      const subtotal = (item.price * item.quantity).toFixed(2);
+      message += `${index + 1}. *${item.name}*\n`;
+      message += `   Qtd: ${item.quantity}x | Preço: R$ ${item.price.toFixed(2)}\n`;
+      message += `   Subtotal: R$ ${subtotal}\n\n`;
+    });
+
+    message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    message += `💰 *TOTAL DO PEDIDO: R$ ${calculateTotal().toFixed(2)}*\n\n`;
+    message += `⏰ Pedido realizado em: ${new Date().toLocaleString('pt-BR')}\n\n`;
+    message += `Obrigado pela preferência! 😊`;
+
+    // Número do WhatsApp (substitua pelo número real do estabelecimento)
+    const phoneNumber = "5511999999999"; // Formato: código do país + DDD + número
+    
+    // URL do WhatsApp
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    
+    // Abrir WhatsApp
+    window.open(whatsappURL, '_blank');
+    
+    // Limpar carrinho e fechar modal
+    setCart([]);
+    setIsCartOpen(false);
+    setCustomerName("");
+    setAddress("");
+    
+    showToast("Pedido enviado para o WhatsApp! 🎉", "success");
+  };
+
   const openProductModal = (product) => {
     setSelectedProduct(product);
     setIsProductModalOpen(true);
@@ -236,7 +290,7 @@ function App() {
             closeModal={() => setIsCartOpen(false)}
             removeFromCart={removeFromCart}
             calculateTotal={calculateTotal}
-            checkout={() => console.log('Checkout')}
+            checkout={handleWhatsAppCheckout}
             address={address}
             setAddress={setAddress}
             addressWarn={false}

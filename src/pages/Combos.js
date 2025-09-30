@@ -7,13 +7,10 @@ import hamb4 from "../assets/hamb-4.png";
 // import cocacolaImg from "../assets/refri-coca.png";
 // import guaranaImg from "../assets/refri-guarana.png";
 
-const Combos = () => {
+const Combos = ({ addToCart, onProductClick, showToast }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  // const [cart, setCart] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
-
-  // addToCart function removed - handled by parent component
 
   const openProductModal = (product) => {
     setSelectedProduct(product);
@@ -85,7 +82,10 @@ const Combos = () => {
                 <p className="font-bold text-lg text-green-600">R$ {combo.price.toFixed(2)}</p>
                 <button
                   className="bg-gray-900 px-5 rounded hover:bg-gray-800 transition-colors duration-200"
-                  onClick={() => console.log('Add to cart:', combo.name)}
+                  onClick={() => {
+                    addToCart(combo.name, combo.price, combo.image);
+                    showToast && showToast(`${combo.name} adicionado ao carrinho!`);
+                  }}
                 >
                   <i className="fa fa-cart-plus text-lg text-white"></i>
                 </button>
@@ -110,7 +110,7 @@ const Combos = () => {
         product={selectedProduct}
         isOpen={isProductModalOpen}
         onClose={closeProductModal}
-        addToCart={() => console.log('Add to cart from modal')}
+        addToCart={addToCart}
       />
     </div>
   );

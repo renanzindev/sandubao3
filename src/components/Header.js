@@ -11,14 +11,14 @@ const Header = () => {
   };
   
   const handleWhatsAppContact = () => {
-    const phoneNumber = "5531969405480"; // Formato internacional
+    const phoneNumber = "5531971659344"; // Formato internacional
     const message = "Olá! Gostaria de fazer um pedido no Sandubão 🍔";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   return (
-    <header className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg relative">
+    <header className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg relative mb-6">
       <div className="container mx-auto px-4">
         {/* Logo e Menu Mobile */}
         <div className="flex justify-between items-center py-4">
@@ -59,7 +59,7 @@ const Header = () => {
           
           <div className="flex items-center space-x-2 bg-white bg-opacity-20 px-3 py-2 rounded-lg backdrop-blur-sm">
             <FontAwesomeIcon icon={faPhone} className="text-yellow-200" />
-            <span className="font-medium">(31) 9694-0548</span>
+            <span className="font-medium">(31) 97165-9344</span>
           </div>
           
           <div className="flex items-center space-x-2 bg-white bg-opacity-20 px-3 py-2 rounded-lg backdrop-blur-sm">
@@ -85,7 +85,7 @@ const Header = () => {
               <FontAwesomeIcon icon={faPhone} className="text-yellow-200 text-lg" />
               <div>
                 <p className="font-medium text-sm">Telefone</p>
-                <p className="text-xs opacity-90">(31) 9694-0548</p>
+                <p className="text-xs opacity-90">(31) 97165-9344</p>
               </div>
             </div>
             
