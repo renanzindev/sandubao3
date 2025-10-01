@@ -3,12 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faPlus, 
   faMinus, 
-  faShoppingCart, 
-  faSave,
-  faEye
+  faShoppingCart
 } from "@fortawesome/free-solid-svg-icons";
 import { ingredients, categories } from "../data/ingredients";
-import ProductModal from "../components/ProductModal";
 
 const CustomSandwich = ({ addToCart, showToast }) => {
   const [customSandwich, setCustomSandwich] = useState({
@@ -19,19 +16,6 @@ const CustomSandwich = ({ addToCart, showToast }) => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => {
-    if (!customSandwich.name.trim()) {
-      showToast && showToast("Digite um nome para o sanduíche primeiro!", "error");
-      return;
-    }
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
 
   const addIngredient = (ingredient) => {
     setCustomSandwich(prev => ({
@@ -51,11 +35,6 @@ const CustomSandwich = ({ addToCart, showToast }) => {
   };
 
   const handleSave = async () => {
-    if (!customSandwich.name.trim()) {
-      showToast && showToast("Por favor, digite o nome do sanduíche!", "error");
-      return;
-    }
-
     if (customSandwich.ingredients.length === 0) {
       showToast && showToast("Adicione pelo menos um ingrediente!", "error");
       return;
@@ -66,14 +45,15 @@ const CustomSandwich = ({ addToCart, showToast }) => {
     // Simula salvamento
     setTimeout(() => {
       const defaultImage = "/api/placeholder/300/200";
+      const sandwichName = "Lanche Personalizado";
       
       addToCart && addToCart(
-        customSandwich.name,
+        sandwichName,
         customSandwich.price,
         defaultImage
       );
 
-      showToast && showToast(`${customSandwich.name} adicionado ao carrinho!`, "success");
+      showToast && showToast(`${sandwichName} adicionado ao carrinho!`, "success");
       
       // Reset form
       setCustomSandwich({
@@ -109,45 +89,49 @@ const CustomSandwich = ({ addToCart, showToast }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Formulário de Configuração */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Resumo do Pedido */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <FontAwesomeIcon icon={faSave} className="mr-3 text-yellow-500" />
-              Configurações
+              <FontAwesomeIcon icon={faShoppingCart} className="mr-3 text-yellow-500" />
+              Seu Lanche Personalizado
             </h2>
 
-            {/* Nome do Sanduíche */}
-            <div className="mb-6">
-              <label className="block text-gray-700 font-medium mb-2">
-                Nome do Sanduíche *
-              </label>
-              <input
-                type="text"
-                value={customSandwich.name}
-                onChange={(e) => setCustomSandwich(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="Ex: Mega Burger Especial"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200"
-                maxLength={50}
-              />
-            </div>
-
-            {/* Descrição */}
-            <div className="mb-6">
-              <label className="block text-gray-700 font-medium mb-2">
-                Descrição
-              </label>
-              <textarea
-                value={customSandwich.description}
-                onChange={(e) => setCustomSandwich(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="Descreva seu sanduíche personalizado..."
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all duration-200 resize-none"
-                maxLength={200}
-              />
-            </div>
-
-
+            {/* Ingredientes Selecionados */}
+            {customSandwich.ingredients.length > 0 ? (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Ingredientes do seu lanche ({customSandwich.ingredients.length})
+                </h3>
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {customSandwich.ingredients.map((ingredient, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg"
+                    >
+                      <div>
+                        <span className="font-medium text-gray-800">{ingredient.name}</span>
+                        <span className="text-green-600 font-semibold ml-2">
+                          +R$ {ingredient.price.toFixed(2)}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => removeIngredient(index)}
+                        className="bg-red-500 text-white w-8 h-8 rounded-full hover:bg-red-600 transition-colors duration-200 flex items-center justify-center"
+                      >
+                        <FontAwesomeIcon icon={faMinus} className="text-sm" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="mb-6 p-6 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg text-center">
+                <p className="text-gray-500 text-lg">
+                  🍔 Comece adicionando ingredientes para montar seu lanche!
+                </p>
+              </div>
+            )}
 
             {/* Preço Total */}
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
@@ -163,7 +147,7 @@ const CustomSandwich = ({ addToCart, showToast }) => {
             <div className="flex gap-3">
               <button
                 onClick={handleSave}
-                disabled={isLoading || !customSandwich.name.trim() || customSandwich.ingredients.length === 0}
+                disabled={isLoading || customSandwich.ingredients.length === 0}
                 className="flex-1 bg-yellow-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-yellow-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
               >
                 {isLoading ? (
@@ -182,63 +166,6 @@ const CustomSandwich = ({ addToCart, showToast }) => {
               >
                 Limpar
               </button>
-            </div>
-          </div>
-
-          {/* Visualização do Sanduíche */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <FontAwesomeIcon icon={faEye} className="mr-3 text-blue-500" />
-              Visualização
-            </h2>
-
-            <div className="relative group">
-              {/* Imagem do Sanduíche */}
-              <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-4 mb-4">
-                <img
-                  src="/api/placeholder/300/200"
-                  alt={customSandwich.name || "Seu Sanduíche Personalizado"}
-                  className="w-full h-48 object-cover rounded-lg shadow-md"
-                />
-                
-                {/* Overlay com ícone de olho */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100 rounded-xl">
-                  <button
-                    onClick={openModal}
-                    className="bg-white text-gray-800 p-3 rounded-full hover:bg-gray-100 transition-colors duration-200 transform hover:scale-110 shadow-lg"
-                    aria-label="Ver detalhes do sanduíche"
-                  >
-                    <FontAwesomeIcon icon={faEye} className="text-lg" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Informações do Sanduíche */}
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {customSandwich.name || "Seu Sanduíche Personalizado"}
-                </h3>
-                
-                <p className="text-sm text-gray-600">
-                  {customSandwich.description || "Adicione uma descrição para seu sanduíche..."}
-                </p>
-
-                <div className="bg-green-50 p-3 rounded-lg">
-                  <span className="text-sm text-gray-500 uppercase tracking-wide">Preço</span>
-                  <p className="text-xl font-bold text-green-600">
-                    R$ {customSandwich.price.toFixed(2)}
-                  </p>
-                </div>
-
-                {customSandwich.ingredients.length > 0 && (
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <span className="text-sm text-gray-500 uppercase tracking-wide">Ingredientes</span>
-                    <p className="text-sm text-gray-700 mt-1">
-                      {customSandwich.ingredients.map(ing => ing.name).join(", ")}
-                    </p>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
 
@@ -322,18 +249,7 @@ const CustomSandwich = ({ addToCart, showToast }) => {
         </div>
       </div>
 
-      {/* Modal de Visualização */}
-      <ProductModal
-        product={{
-          name: customSandwich.name || "Seu Sanduíche Personalizado",
-          description: customSandwich.description || `Sanduíche personalizado com ${customSandwich.ingredients.length} ingredientes: ${customSandwich.ingredients.map(ing => ing.name).join(", ")}`,
-          price: customSandwich.price,
-          image: "/api/placeholder/400/300"
-        }}
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        addToCart={addToCart}
-      />
+
     </div>
   );
 };
