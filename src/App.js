@@ -189,8 +189,8 @@ function App() {
     message += `⏰ Pedido realizado em: ${new Date().toLocaleString('pt-BR')}\n\n`;
     message += `Obrigado pela preferência! 😊`;
 
-    // Número do WhatsApp (substitua pelo número real do estabelecimento)
-    const phoneNumber = "5511999999999"; // Formato: código do país + DDD + número
+    // Número do WhatsApp do estabelecimento
+    const phoneNumber = "5531971659344"; // Formato: código do país + DDD + número
     
     // URL do WhatsApp
     const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
