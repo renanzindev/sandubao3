@@ -19,8 +19,7 @@ const PaymentModal = ({
   onClose, 
   total, 
   cart, 
-  customerName, 
-  address, 
+  checkoutData, 
   onPaymentComplete 
 }) => {
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -40,7 +39,7 @@ const PaymentModal = ({
     const pixData = {
       key: "31971659344", // Chave PIX (telefone)
       amount: finalTotal,
-      description: `Pedido SanduBão - ${customerName}`,
+      description: `Pedido SanduBão - ${checkoutData?.customerName || 'Cliente'}`,
       merchantName: "SanduBão",
       merchantCity: "Belo Horizonte",
       txid: `SANDUBAO${Date.now()}`,
@@ -75,6 +74,32 @@ const PaymentModal = ({
     }
   };
 
+  // Calcular total com frete
+  useEffect(() => {
+    let totalWithDelivery = total;
+    
+    if (checkoutData?.deliveryInfo && !checkoutData.deliveryInfo.isFreeDelivery) {
+      totalWithDelivery += checkoutData.deliveryInfo.fee;
+    }
+    
+    // Se não há cupom aplicado, atualizar o total final
+    if (!appliedCoupon) {
+      setFinalTotal(totalWithDelivery);
+    } else {
+      // Recalcular desconto com o novo total
+      let discount = 0;
+      if (appliedCoupon.type === "percentage") {
+        discount = totalWithDelivery * appliedCoupon.discount;
+        if (discount > appliedCoupon.maxDiscount) {
+          discount = appliedCoupon.maxDiscount;
+        }
+      } else {
+        discount = appliedCoupon.discount;
+      }
+      setFinalTotal(totalWithDelivery - discount);
+    }
+  }, [total, checkoutData, appliedCoupon]);
+
   // Calcular troco
   useEffect(() => {
     if (cashAmount && paymentMethod === "Dinheiro") {
@@ -101,7 +126,13 @@ const PaymentModal = ({
       return;
     }
 
-    if (total < coupon.minValue) {
+    // Calcular total com frete para validação do cupom
+    let totalWithDelivery = total;
+    if (checkoutData?.deliveryInfo && !checkoutData.deliveryInfo.isFreeDelivery) {
+      totalWithDelivery += checkoutData.deliveryInfo.fee;
+    }
+
+    if (totalWithDelivery < coupon.minValue) {
       setCouponError(`Valor mínimo de R$ ${coupon.minValue.toFixed(2)} para este cupom`);
       return;
     }
@@ -116,7 +147,7 @@ const PaymentModal = ({
 
     let discount = 0;
     if (coupon.type === "percentage") {
-      discount = total * coupon.discount;
+      discount = totalWithDelivery * coupon.discount;
       if (discount > coupon.maxDiscount) {
         discount = coupon.maxDiscount;
       }
@@ -125,7 +156,7 @@ const PaymentModal = ({
     }
 
     setAppliedCoupon({ ...coupon, discountAmount: discount });
-    setFinalTotal(total - discount);
+    setFinalTotal(totalWithDelivery - discount);
   };
 
   // Remover cupom
@@ -133,7 +164,14 @@ const PaymentModal = ({
     setAppliedCoupon(null);
     setCouponCode("");
     setCouponError("");
-    setFinalTotal(total);
+    
+    // Calcular total com frete
+    let totalWithDelivery = total;
+    if (checkoutData?.deliveryInfo && !checkoutData.deliveryInfo.isFreeDelivery) {
+      totalWithDelivery += checkoutData.deliveryInfo.fee;
+    }
+    
+    setFinalTotal(totalWithDelivery);
   };
 
   // Copiar código PIX
@@ -169,7 +207,7 @@ const PaymentModal = ({
         setIsGeneratingQR(false);
       });
     }
-  }, [paymentMethod, finalTotal, customerName]);
+  }, [paymentMethod, finalTotal, checkoutData?.customerName]);
 
   if (!isOpen) return null;
 
@@ -193,9 +231,20 @@ const PaymentModal = ({
             <h3 className="font-semibold mb-2">Resumo do Pedido</h3>
             <div className="text-sm space-y-1">
               <div className="flex justify-between">
-                <span>Subtotal:</span>
+                <span>Subtotal dos itens:</span>
                 <span>R$ {total.toFixed(2)}</span>
               </div>
+              
+              {/* Informações de entrega */}
+              {checkoutData?.deliveryInfo && (
+                <div className="flex justify-between">
+                  <span>Taxa de entrega:</span>
+                  <span className={checkoutData.deliveryInfo.isFreeDelivery ? "text-green-600 font-medium" : ""}>
+                    {checkoutData.deliveryInfo.isFreeDelivery ? "GRÁTIS" : `R$ ${checkoutData.deliveryInfo.fee.toFixed(2)}`}
+                  </span>
+                </div>
+              )}
+              
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600">
                   <span>Desconto ({appliedCoupon.code}):</span>
@@ -206,6 +255,14 @@ const PaymentModal = ({
                 <span>Total:</span>
                 <span>R$ {finalTotal.toFixed(2)}</span>
               </div>
+              
+              {/* Informações adicionais de entrega */}
+              {checkoutData?.deliveryInfo && (
+                <div className="text-xs text-gray-600 mt-2 pt-2 border-t">
+                  <p>📍 Zona: {checkoutData.deliveryInfo.zone}</p>
+                  <p>⏱️ Tempo estimado: {checkoutData.deliveryInfo.estimatedTime}</p>
+                </div>
+              )}
             </div>
           </div>
 

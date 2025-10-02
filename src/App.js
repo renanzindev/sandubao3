@@ -25,6 +25,7 @@ function App() {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [favorites, setFavorites] = useState(new Set());
+  const [checkoutData, setCheckoutData] = useState(null);
 
   // Simula carregamento inicial
   useEffect(() => {
@@ -155,33 +156,50 @@ function App() {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = (checkoutData) => {
     // Validações
     if (cart.length === 0) {
       showToast("Seu carrinho está vazio!", "error");
       return;
     }
 
-    if (!customerName.trim()) {
+    if (!checkoutData.customerName.trim()) {
       showToast("Por favor, informe seu nome!", "error");
       return;
     }
 
-    if (!address.trim()) {
-      showToast("Por favor, informe seu endereço de entrega!", "error");
+    if (!checkoutData.address) {
+      showToast("Por favor, selecione um endereço de entrega!", "error");
       return;
     }
 
-    // Abrir modal de pagamento
+    // Store checkout data for payment
+    setCheckoutData(checkoutData);
+    
+    // Close cart modal and open payment modal
+    setIsCartOpen(false);
     setIsPaymentOpen(true);
   };
 
   const handleWhatsAppCheckout = (paymentData) => {
+    if (!checkoutData) {
+      showToast("Erro: dados do pedido não encontrados", "error");
+      return;
+    }
 
     // Formatação da mensagem para WhatsApp
     let message = `🍔 *NOVO PEDIDO - SANDUBÃO* 🍔\n\n`;
-    message += `👤 *Cliente:* ${customerName}\n`;
-    message += `📍 *Endereço:* ${address}\n\n`;
+    message += `👤 *Cliente:* ${checkoutData.customerName}\n`;
+    
+    // Formatação do endereço
+    const address = checkoutData.address;
+    message += `📍 *Endereço de Entrega:*\n`;
+    message += `   ${address.street}, ${address.number}`;
+    if (address.complement) message += ` - ${address.complement}`;
+    message += `\n   ${address.neighborhood} - ${address.city}/${address.state}\n`;
+    message += `   CEP: ${address.cep}\n`;
+    if (address.reference) message += `   📍 Referência: ${address.reference}\n`;
+    message += `\n`;
     message += `🛒 *ITENS DO PEDIDO:*\n`;
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
 
@@ -194,15 +212,28 @@ function App() {
 
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
     
+    // Resumo financeiro
+    const subtotal = calculateTotal();
+    message += `💰 *Subtotal dos itens:* R$ ${subtotal.toFixed(2)}\n`;
+    
+    // Informações de entrega
+    if (checkoutData.deliveryInfo) {
+      const delivery = checkoutData.deliveryInfo;
+      if (delivery.isFreeDelivery) {
+        message += `🚚 *Entrega:* GRÁTIS\n`;
+      } else {
+        message += `🚚 *Taxa de entrega:* R$ ${delivery.fee.toFixed(2)}\n`;
+      }
+      message += `📍 *Zona:* ${delivery.zone}\n`;
+      message += `⏱️ *Tempo estimado:* ${delivery.estimatedTime}\n`;
+    }
+    
     // Adicionar informações de desconto se houver cupom
     if (paymentData.coupon) {
-      const originalTotal = calculateTotal();
-      message += `💰 *Subtotal:* R$ ${originalTotal.toFixed(2)}\n`;
       message += `🎟️ *Cupom:* ${paymentData.coupon.code} (-${paymentData.coupon.type === 'percentage' ? paymentData.coupon.discount + '%' : 'R$ ' + paymentData.coupon.discount.toFixed(2)})\n`;
-      message += `💰 *TOTAL DO PEDIDO: R$ ${paymentData.finalTotal.toFixed(2)}*\n\n`;
-    } else {
-      message += `💰 *TOTAL DO PEDIDO: R$ ${calculateTotal().toFixed(2)}*\n\n`;
     }
+    
+    message += `💰 *TOTAL DO PEDIDO: R$ ${paymentData.finalTotal.toFixed(2)}*\n\n`;
     
     // Adicionar informações de pagamento
     message += `💳 *FORMA DE PAGAMENTO:* ${paymentData.method}\n`;
@@ -326,9 +357,6 @@ function App() {
             removeFromCart={removeFromCart}
             calculateTotal={calculateTotal}
             checkout={handleCheckout}
-            address={address}
-            setAddress={setAddress}
-            addressWarn={false}
             incrementItem={(name) => {
               const item = cart.find(item => item.name === name);
               if (item) {
@@ -343,6 +371,7 @@ function App() {
             }}
             customerName={customerName}
             setCustomerName={setCustomerName}
+            showToast={showToast}
           />
         )}
 
@@ -357,13 +386,12 @@ function App() {
           />
         )}
 
-        {isPaymentOpen && (
+        {isPaymentOpen && checkoutData && (
           <PaymentModal
             isOpen={isPaymentOpen}
             cart={cart}
             total={calculateTotal()}
-            customerName={customerName}
-            address={address}
+            checkoutData={checkoutData}
             onClose={() => setIsPaymentOpen(false)}
             onPaymentComplete={handleWhatsAppCheckout}
             showToast={showToast}
