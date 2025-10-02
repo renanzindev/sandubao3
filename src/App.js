@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import ProductList from "./components/ProductList";
 import CartModal from "./components/CartModal";
 import ProductModal from "./components/ProductModal";
+import PaymentModal from "./components/PaymentModal";
 import Footer from "./components/Footer";
 import Bebidas from "./pages/Bebidas";
 import Combos from "./pages/Combos";
@@ -16,6 +17,7 @@ import products from './data/products';
 function App() {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [address, setAddress] = useState("");
   const [toast, setToast] = useState({ message: "", type: "success" });
   const [customerName, setCustomerName] = useState("");
@@ -153,7 +155,7 @@ function App() {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  const handleWhatsAppCheckout = () => {
+  const handleCheckout = () => {
     // Validações
     if (cart.length === 0) {
       showToast("Seu carrinho está vazio!", "error");
@@ -170,6 +172,12 @@ function App() {
       return;
     }
 
+    // Abrir modal de pagamento
+    setIsPaymentOpen(true);
+  };
+
+  const handleWhatsAppCheckout = (paymentData) => {
+
     // Formatação da mensagem para WhatsApp
     let message = `🍔 *NOVO PEDIDO - SANDUBÃO* 🍔\n\n`;
     message += `👤 *Cliente:* ${customerName}\n`;
@@ -185,8 +193,24 @@ function App() {
     });
 
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-    message += `💰 *TOTAL DO PEDIDO: R$ ${calculateTotal().toFixed(2)}*\n\n`;
-    message += `⏰ Pedido realizado em: ${new Date().toLocaleString('pt-BR')}\n\n`;
+    
+    // Adicionar informações de desconto se houver cupom
+    if (paymentData.coupon) {
+      const originalTotal = calculateTotal();
+      message += `💰 *Subtotal:* R$ ${originalTotal.toFixed(2)}\n`;
+      message += `🎟️ *Cupom:* ${paymentData.coupon.code} (-${paymentData.coupon.type === 'percentage' ? paymentData.coupon.discount + '%' : 'R$ ' + paymentData.coupon.discount.toFixed(2)})\n`;
+      message += `💰 *TOTAL DO PEDIDO: R$ ${paymentData.finalTotal.toFixed(2)}*\n\n`;
+    } else {
+      message += `💰 *TOTAL DO PEDIDO: R$ ${calculateTotal().toFixed(2)}*\n\n`;
+    }
+    
+    // Adicionar informações de pagamento
+    message += `💳 *FORMA DE PAGAMENTO:* ${paymentData.method}\n`;
+    if (paymentData.method === 'Dinheiro' && paymentData.cashAmount) {
+      message += `💵 *Troco para:* R$ ${paymentData.cashAmount.toFixed(2)}\n`;
+      message += `💰 *Troco:* R$ ${paymentData.change.toFixed(2)}\n`;
+    }
+    message += `\n⏰ Pedido realizado em: ${new Date().toLocaleString('pt-BR')}\n\n`;
     message += `Obrigado pela preferência! 😊`;
 
     // Número do WhatsApp do estabelecimento
@@ -198,9 +222,10 @@ function App() {
     // Abrir WhatsApp
     window.open(whatsappURL, '_blank');
     
-    // Limpar carrinho e fechar modal
+    // Limpar carrinho e fechar modais
     setCart([]);
     setIsCartOpen(false);
+    setIsPaymentOpen(false);
     setCustomerName("");
     setAddress("");
     
@@ -300,7 +325,7 @@ function App() {
             closeModal={() => setIsCartOpen(false)}
             removeFromCart={removeFromCart}
             calculateTotal={calculateTotal}
-            checkout={handleWhatsAppCheckout}
+            checkout={handleCheckout}
             address={address}
             setAddress={setAddress}
             addressWarn={false}
@@ -328,6 +353,19 @@ function App() {
             onAddToCart={addToCart}
             isFavorite={favorites.has(selectedProduct.id)}
             onToggleFavorite={() => toggleFavorite(selectedProduct.id)}
+            showToast={showToast}
+          />
+        )}
+
+        {isPaymentOpen && (
+          <PaymentModal
+            isOpen={isPaymentOpen}
+            cart={cart}
+            total={calculateTotal()}
+            customerName={customerName}
+            address={address}
+            onClose={() => setIsPaymentOpen(false)}
+            onPaymentComplete={handleWhatsAppCheckout}
             showToast={showToast}
           />
         )}
