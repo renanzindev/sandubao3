@@ -100,24 +100,26 @@ const AddressModal = ({
     setCepLoading(true);
     
     try {
+      // Remove máscara (hífen etc.): ViaCEP espera só os 8 dígitos
       const cleanCep = cep.replace(/\D/g, '');
-      
+
       if (cleanCep.length === 8) {
-        // Calculate delivery fee
+        // Atualiza frete/prazo com base no CEP (lógica local do app)
         const deliveryResult = calculateDeliveryFee(cleanCep);
         setDeliveryInfo(deliveryResult);
 
-        // Real ViaCEP API call
+        // Consulta pública: preenche logradouro, bairro, cidade e UF pelo CEP
         const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
         const data = await response.json();
-        
+
+        // ViaCEP retorna { erro: true } quando o CEP não existe na base
         if (data.erro) {
           showToast && showToast('CEP não encontrado', 'error');
           setCepLoading(false);
           return;
         }
 
-        // Update form with API data
+        // Mescla o retorno da API nos campos do formulário (mantém CEP e complemento)
         setFormData(prev => ({
           ...prev,
           street: data.logradouro || '',
@@ -125,10 +127,11 @@ const AddressModal = ({
           city: data.localidade || '',
           state: data.uf || ''
         }));
-        
+
         setCepLoading(false);
       }
     } catch (error) {
+      // Falha de rede, JSON inválido ou outro erro na requisição
       console.error('Erro ao buscar CEP:', error);
       showToast && showToast('Erro ao buscar CEP. Tente novamente.', 'error');
       setCepLoading(false);
