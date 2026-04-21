@@ -76,7 +76,7 @@ const AddressManager = ({
       await deleteAddress(addressId);
       loadAddresses();
       setDeleteConfirm(null);
-      showToast && showToast('Endereço removido com sucesso!', 'success');
+      showToast && showToast('Endereço removido com sucesso!', 'successo');
     } catch (error) {
       console.error('Erro ao deletar endereço:', error);
       showToast && showToast('Erro ao remover endereço', 'error');
@@ -87,7 +87,7 @@ const AddressManager = ({
     try {
       await setDefaultAddress(addressId);
       loadAddresses();
-      showToast && showToast('Endereço padrão definido!', 'success');
+      showToast && showToast('Endereço padrão definido!', 'successo');
     } catch (error) {
       console.error('Erro ao definir endereço padrão:', error);
       showToast && showToast('Erro ao definir endereço padrão', 'error');
