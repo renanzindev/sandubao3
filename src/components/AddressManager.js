@@ -278,7 +278,7 @@ const AddressManager = ({
                 icon={faExclamationTriangle} 
                 className="text-4xl text-red-500 mb-4" 
               />
-              <h3 className="text-lg font-bold mb-2">Confirmar Exclusão</h3>
+              <h3 className="text-lg font-bold mb-2">Confirmar Exclusão.</h3>
               <p className="text-gray-600 mb-6">
                 Tem certeza que deseja excluir este endereço? Esta ação não pode ser desfeita.
               </p>

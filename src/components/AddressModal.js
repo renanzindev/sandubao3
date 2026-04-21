@@ -136,11 +136,14 @@ const AddressModal = ({
   };
 
   const handleSubmit = async (e) => {
+    // Evita recarregar a página (comportamento padrão do form em HTML)
     e.preventDefault();
+    // Feedback visual enquanto salva
     setIsLoading(true);
 
+    // Valida campos obrigatórios/formato antes de chamar a API ou o estado pai
     const validation = validateAddress(formData);
-    
+
     if (!validation.isValid) {
       setErrors(validation.errors);
       setIsLoading(false);
@@ -148,8 +151,10 @@ const AddressModal = ({
     }
 
     try {
+      // Persiste via callback do componente pai (ex.: API ou contexto)
       await onSave(formData);
       onClose();
+      // showToast pode ser opcional; só chama se existir
       showToast && showToast(
         editingAddress ? 'Endereço atualizado com sucesso!' : 'Endereço salvo com sucesso!',
         'success'
@@ -158,6 +163,7 @@ const AddressModal = ({
       console.error('Erro ao salvar endereço:', error);
       showToast && showToast('Erro ao salvar endereço', 'error');
     } finally {
+      // Garante desligar o loading tanto em sucesso quanto em erro
       setIsLoading(false);
     }
   };
