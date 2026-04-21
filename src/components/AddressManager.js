@@ -51,10 +51,10 @@ const AddressManager = ({
     try {
       if (editingAddress) {
         await updateAddress(editingAddress.id, addressData);
-        showToast && showToast('Endereço atualizado com sucesso!', 'success');
+        showToast && showToast('Endereço atualizado com sucesso!', 'successo');
       } else {
         await saveAddress(addressData);
-        showToast && showToast('Endereço salvo com sucesso!', 'success');
+        showToast && showToast('Endereço salvo com sucesso!', 'successo');
       }
       
       loadAddresses();
