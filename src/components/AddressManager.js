@@ -139,14 +139,14 @@ const AddressManager = ({
                   className="text-4xl text-gray-300 mb-4" 
                 />
                 <p className="text-gray-500 mb-4">
-                  Você ainda não tem endereços salvos
+                  Você ainda não tem endereços salvos.
                 </p>
                 <button
                   onClick={() => setIsAddressModalOpen(true)}
                   className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
                 >
                   <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                  Adicionar Primeiro Endereço
+                  Adicionar Primeiro Endereço.
                 </button>
               </div>
             ) : (
@@ -182,7 +182,7 @@ const AddressManager = ({
                             {isSelected && (
                               <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
                                 <FontAwesomeIcon icon={faCheck} className="mr-1" />
-                                Selecionado
+                                Selecionado.
                               </span>
                             )}
                           </div>
@@ -250,7 +250,7 @@ const AddressManager = ({
                 className="w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
               >
                 <FontAwesomeIcon icon={faPlus} className="mr-2" />
-                Adicionar Novo Endereço
+                Adicionar Novo Endereço.
               </button>
             </div>
           )}
