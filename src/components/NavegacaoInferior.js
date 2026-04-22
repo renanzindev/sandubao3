@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHamburger, faUtensils, faWineGlass, faCog } from "@fortawesome/free-solid-svg-icons";
 
-const BottomNav = () => {
+const NavegacaoInferior = () => {
   const location = useLocation();
   
   const isActive = (path) => {
@@ -85,4 +85,4 @@ const BottomNav = () => {
   );
 };
 
-export default BottomNav;
+export default NavegacaoInferior;

@@ -9,7 +9,7 @@ import Rodape from "./components/Rodape";
 import Bebidas from "./pages/Bebidas";
 import Combos from "./pages/Combos";
 import CustomSandwich from "./pages/CustomSandwich";
-import BottomNav from "./components/BottomNav";
+import NavegacaoInferior from "./components/NavegacaoInferior";
 import Toast from "./components/Toast";
 import Loading from "./components/Loading";
 import products from './data/products';
@@ -348,7 +348,7 @@ function App() {
           onCartClick={() => setIsCartOpen(true)} 
         />
         
-        <BottomNav />
+        <NavegacaoInferior />
 
         {isCartOpen && (
           <CartModal
