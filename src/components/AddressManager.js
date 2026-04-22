@@ -23,7 +23,7 @@ import {
   formatAddressForDisplay 
 } from '../utils/addressStorage';
 
-const AddressManager = ({ 
+const GerenciadorEnderecos = ({ 
   isOpen, 
   onClose, 
   onSelectAddress, 
@@ -305,4 +305,4 @@ const AddressManager = ({
   );
 };
 
-export default AddressManager;
+export default GerenciadorEnderecos;

@@ -8,7 +8,7 @@ import {
   faGift,
   faSpinner
 } from '@fortawesome/free-solid-svg-icons';
-import AddressManager from './AddressManager';
+import GerenciadorEnderecos from './AddressManager';
 import DeliveryService from '../services/deliveryService';
 import { getSavedAddresses, formatAddressForDisplay } from '../utils/addressStorage';
 
@@ -291,8 +291,8 @@ const CartModal = ({
         </div>
       </div>
 
-      {/* Address Manager Modal */}
-      <AddressManager
+      {/* Modal gerenciador de endereços */}
+      <GerenciadorEnderecos
         isOpen={isAddressManagerOpen}
         onClose={() => setIsAddressManagerOpen(false)}
         onSelectAddress={handleSelectAddress}
