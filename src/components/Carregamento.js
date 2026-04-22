@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-const Loading = ({ 
+const Carregamento = ({ 
   size = 'medium', 
   text = 'Carregando...', 
   overlay = false, 
@@ -38,7 +38,7 @@ const Loading = ({
     }
   };
 
-  const LoadingContent = () => (
+  const ConteudoCarregamento = () => (
     <div className="flex flex-col items-center justify-center space-y-4">
       {/* Spinner personalizado */}
       <div className="relative">
@@ -70,7 +70,7 @@ const Loading = ({
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] backdrop-blur-sm">
         <div className="bg-white rounded-xl p-8 shadow-2xl max-w-sm w-full mx-4">
-          <LoadingContent />
+          <ConteudoCarregamento />
         </div>
       </div>
     );
@@ -78,13 +78,13 @@ const Loading = ({
 
   return (
     <div className="flex items-center justify-center py-8">
-      <LoadingContent />
+      <ConteudoCarregamento />
     </div>
   );
 };
 
-// Componente de Loading inline para botões
-export const ButtonLoading = ({ size = 'small' }) => {
+/** Indicador de carregamento inline para botões */
+export const CarregamentoBotao = ({ size = 'small' }) => {
   const getSizeClasses = () => {
     switch (size) {
       case 'small':
@@ -103,8 +103,8 @@ export const ButtonLoading = ({ size = 'small' }) => {
   );
 };
 
-// Componente de Loading para skeleton
-export const SkeletonLoader = ({ lines = 3, className = '' }) => {
+/** Placeholder em formato de esqueleto durante o carregamento */
+export const EsqueletoCarregamento = ({ lines = 3, className = '' }) => {
   return (
     <div className={`animate-pulse ${className}`}>
       {Array.from({ length: lines }).map((_, index) => (
@@ -117,4 +117,4 @@ export const SkeletonLoader = ({ lines = 3, className = '' }) => {
   );
 };
 
-export default Loading;
+export default Carregamento;

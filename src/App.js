@@ -11,7 +11,7 @@ import Combos from "./pages/Combos";
 import CustomSandwich from "./pages/CustomSandwich";
 import NavegacaoInferior from "./components/NavegacaoInferior";
 import Toast from "./components/Toast";
-import Loading from "./components/Loading";
+import Carregamento from "./components/Carregamento";
 import products from './data/products';
 
 function App() {
@@ -279,7 +279,7 @@ function App() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <Loading 
+        <Carregamento 
           size="xlarge" 
           text="Preparando o melhor sabor para você..." 
           color="yellow" 
