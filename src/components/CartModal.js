@@ -8,7 +8,7 @@ import {
   faGift,
   faSpinner
 } from '@fortawesome/free-solid-svg-icons';
-import GerenciadorEnderecos from './AddressManager';
+import GerenciadorEnderecos from './GerenciadorEnderecos';
 import DeliveryService from '../services/deliveryService';
 import { getSavedAddresses, formatAddressForDisplay } from '../utils/addressStorage';
 
