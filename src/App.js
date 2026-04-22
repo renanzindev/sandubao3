@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import ProductList from "./components/ProductList";
-import CartModal from "./components/CartModal";
+import ModalCarrinho from "./components/ModalCarrinho";
 import ProductModal from "./components/ProductModal";
 import PaymentModal from "./components/PaymentModal";
 import Rodape from "./components/Rodape";
@@ -351,7 +351,7 @@ function App() {
         <NavegacaoInferior />
 
         {isCartOpen && (
-          <CartModal
+          <ModalCarrinho
             cart={cart}
             closeModal={() => setIsCartOpen(false)}
             removeFromCart={removeFromCart}

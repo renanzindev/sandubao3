@@ -12,7 +12,7 @@ import GerenciadorEnderecos from './GerenciadorEnderecos';
 import DeliveryService from '../services/deliveryService';
 import { getSavedAddresses, formatAddressForDisplay } from '../utils/addressStorage';
 
-const CartModal = ({ 
+const ModalCarrinho = ({ 
   cart, 
   closeModal, 
   removeFromCart, 
@@ -303,5 +303,4 @@ const CartModal = ({
   );
 };
 
-export default CartModal;
-
+export default ModalCarrinho;
