@@ -12,7 +12,7 @@ import {
 import { validateAddress, formatCep } from '../utils/addressStorage';
 import { calculateDeliveryFee } from '../data/deliveryZones';
 
-const AddressModal = ({ 
+const ModalEndereco = ({ 
   isOpen, 
   onClose, 
   onSave, 
@@ -422,4 +422,4 @@ const AddressModal = ({
   );
 };
 
-export default AddressModal;
+export default ModalEndereco;

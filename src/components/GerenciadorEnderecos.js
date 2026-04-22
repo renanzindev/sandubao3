@@ -13,7 +13,7 @@ import {
   faCheck,
   faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons';
-import AddressModal from './AddressModal';
+import ModalEndereco from './ModalEndereco';
 import { 
   getSavedAddresses, 
   saveAddress, 
@@ -257,8 +257,8 @@ const GerenciadorEnderecos = ({
         </div>
       </div>
 
-      {/* Address Modal */}
-      <AddressModal
+      {/* Modal de cadastro/edição de endereço */}
+      <ModalEndereco
         isOpen={isAddressModalOpen}
         onClose={() => {
           setIsAddressModalOpen(false);
