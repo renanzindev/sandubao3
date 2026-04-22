@@ -5,7 +5,7 @@ import ProductList from "./components/ProductList";
 import CartModal from "./components/CartModal";
 import ProductModal from "./components/ProductModal";
 import PaymentModal from "./components/PaymentModal";
-import Footer from "./components/Footer";
+import Rodape from "./components/Rodape";
 import Bebidas from "./pages/Bebidas";
 import Combos from "./pages/Combos";
 import CustomSandwich from "./pages/CustomSandwich";
@@ -343,7 +343,7 @@ function App() {
           </Routes>
         </main>
 
-        <Footer 
+        <Rodape 
           cart={cart} 
           onCartClick={() => setIsCartOpen(true)} 
         />

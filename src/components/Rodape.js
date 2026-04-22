@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faInstagram, faFacebook, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
-const Footer = ({ cart, onCartClick }) => {
+const Rodape = ({ cart, onCartClick }) => {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   
@@ -19,7 +19,7 @@ const Footer = ({ cart, onCartClick }) => {
 
   return (
     <>
-      {/* Footer Principal */}
+      {/* Rodapé principal */}
       <footer className="bg-gray-900 text-white ">
         <div className="container mx-auto px-4 py-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -126,4 +126,4 @@ const Footer = ({ cart, onCartClick }) => {
   );
 };
 
-export default Footer;
+export default Rodape;
