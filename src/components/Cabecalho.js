@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt, faPhone, faClock, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
-const Header = () => {
+const Cabecalho = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const toggleMenu = () => {
@@ -120,4 +120,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Cabecalho;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
+import Cabecalho from "./components/Cabecalho";
 import ProductList from "./components/ProductList";
 import ModalCarrinho from "./components/ModalCarrinho";
 import ProductModal from "./components/ProductModal";
@@ -291,7 +291,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
-        <Header />
+        <Cabecalho />
         
         <main className="pb-32">
           <Routes>
