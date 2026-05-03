@@ -27,7 +27,7 @@ function App() {
   const [favorites, setFavorites] = useState(new Set());
   const [checkoutData, setCheckoutData] = useState(null);
 
-  // comente 6
+  // comente 7
   // Simula carregamento inicial
   useEffect(() => {
     const timer = setTimeout(() => {
